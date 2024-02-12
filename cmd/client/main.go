@@ -12,24 +12,26 @@ import (
 )
 
 func main() {
-	//sockAddrInSnap := os.Getenv("SNAP_COMMON")
 	log.Println("~~~Client START~~~")
 	log.Println("~~~SNAP_COMMON:", os.Getenv("SNAP_COMMON"))
 	log.Println("~~~SNAP_DATA:", os.Getenv("SNAP_DATA"))
 	u, _ := user.Current()
 	log.Println("~~~current user:", u)
+	log.Println("~~~socket file:", internal.SockAddrSh)
 
-	sockAddrInSnap := internal.SockAddrSh //os.Getenv("SNAP_COMMON") + sockAddr
+	// write file in shared memory
+	data := []byte("Hello from Client!\n")
+	err1 := os.WriteFile(internal.JustFile, data, 0644)
+	log.Println("~~~WriteFile err:", err1)
 
-	log.Println("~~~socket file:", sockAddrInSnap)
-
+	// connect to server on unix socket in shared memory
 	var conn net.Conn
 	var err error
 
 	for i := 0; i < 5; i++ {
 		time.Sleep(1 * time.Second)
 
-		conn, err = net.Dial(internal.Protocol, sockAddrInSnap)
+		conn, err = net.Dial(internal.Protocol, internal.SockAddrSh)
 		if err != nil {
 			log.Fatal(err)
 		}

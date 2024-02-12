@@ -14,20 +14,21 @@ import (
 )
 
 // https://eli.thegreenplace.net/2019/unix-domain-sockets-in-go/
+// https://snapcraft.io/blog/private-shared-memory-support-for-snaps
+// https://forum.snapcraft.io/t/the-shared-memory-interface/28382
+// https://snapcraft.io/docs/shared-memory-interface
+
 func main() {
 	log.Println("~~~Server START~~~")
 	log.Println("~~~SNAP_COMMON:", os.Getenv("SNAP_COMMON"))
 	log.Println("~~~SNAP_DATA:", os.Getenv("SNAP_DATA"))
 	u, _ := user.Current()
 	log.Println("~~~current user:", u)
-
-	sockAddrInSnap := internal.SockAddrSh //os.Getenv("SNAP_COMMON") + sockAddr
-
-	log.Println("~~~socket file:", sockAddrInSnap)
+	log.Println("~~~socket file:", internal.SockAddrSh)
 
 	cleanup := func() {
-		if _, err := os.Stat(sockAddrInSnap); err == nil {
-			if err := os.RemoveAll(sockAddrInSnap); err != nil {
+		if _, err := os.Stat(internal.SockAddrSh); err == nil {
+			if err := os.RemoveAll(internal.SockAddrSh); err != nil {
 				log.Fatal(err)
 			}
 		}
@@ -35,13 +36,19 @@ func main() {
 
 	cleanup()
 
-	listener, err := net.Listen(internal.Protocol, sockAddrInSnap)
+	// write file in shared memory
+	data := []byte("Hello from Server!\n")
+	err := os.WriteFile(internal.JustFile, data, 0644)
+	log.Println("~~~WriteFile err:", err)
+
+	// server on unix socket in shared memory
+	listener, err := net.Listen(internal.Protocol, internal.SockAddrSh)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer listener.Close()
 
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 
 	go func() {

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+rm ./client ./server
+rm ./*.snap
+
 echo "Build server"
 go build -o server cmd/server/main.go
 
