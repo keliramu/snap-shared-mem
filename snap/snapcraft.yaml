@@ -15,6 +15,7 @@ plugs:
  shmem-private:
   interface: shared-memory
   private: true
+  write: [ s.sck ]
 
 apps:
   client:

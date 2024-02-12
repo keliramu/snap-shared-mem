@@ -31,11 +31,7 @@ func main() {
 
 		conn, err = net.Dial(internal.Protocol, sockAddrInSnap)
 		if err != nil {
-			log.Println("~~~err1:", err)
-			conn, err = net.Dial(internal.Protocol, internal.SockClAddrSh)
-			if err != nil {
-				log.Fatal(err)
-			}
+			log.Fatal(err)
 		}
 
 		_, err = conn.Write([]byte("hello world"))
