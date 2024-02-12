@@ -1,0 +1,34 @@
+name: uxx
+base: core20
+version: '0.23'
+summary: Single-line elevator pitch for your amazing snap
+description: |
+  This is my-snap's description. You have a paragraph or two to tell the
+  most important story about your snap. Keep it under 100 words though,
+  we live in tweetspace and your description wants to look good in the snap
+  store.
+
+grade: devel
+confinement: strict
+
+plugs:
+ shmem-private:
+  interface: shared-memory
+  private: true
+
+apps:
+  client:
+    plugs:
+      - shmem-private
+    command: bin/client
+  server:
+    plugs:
+      - shmem-private
+      - network-bind
+    command: bin/server
+
+parts:
+  snaptest:
+    plugin: go
+    source-type: local
+    source: .
