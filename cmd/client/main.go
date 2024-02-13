@@ -19,16 +19,11 @@ func main() {
 	log.Println("~~~current user:", u)
 	log.Println("~~~socket file:", internal.SockAddrSh)
 
-	// write file in shared memory
-	data := []byte("Hello from Client!\n")
-	err1 := os.WriteFile(internal.JustFile, data, 0644)
-	log.Println("~~~WriteFile err:", err1)
-
 	// connect to server on unix socket in shared memory
 	var conn net.Conn
 	var err error
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 55; i++ {
 		time.Sleep(1 * time.Second)
 
 		conn, err = net.Dial(internal.Protocol, internal.SockAddrSh)

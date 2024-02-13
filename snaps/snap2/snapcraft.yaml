@@ -1,6 +1,6 @@
-name: uxx
+name: uxx2
 base: core20
-version: '0.23'
+version: '0.53'
 summary: Single-line elevator pitch for your amazing snap
 description: |
   This is my-snap's description. You have a paragraph or two to tell the
@@ -11,10 +11,10 @@ description: |
 grade: devel
 confinement: strict
 
-plugs:
- my-shmem-4cl:
-  interface: shared-memory
-  private: true
+# plugs:
+#  my-shmem-4cl:
+#   interface: shared-memory
+#   private: true
 
 slots:
   my-shmem-4srv:
@@ -24,18 +24,17 @@ slots:
 
 apps:
   client:
-    plugs:
-      - my-shmem-4cl
-    command: bin/client
-#    daemon: simple
-  server:
-    plugs:
-      - network-bind
-      # - my-shmem-4cl
     slots:
       - my-shmem-4srv
-    daemon: simple
-    command: bin/server
+    command: bin/client
+#    daemon: simple
+  # server:
+  #   plugs:
+  #     - network-bind
+  #   slots:
+  #     - my-shmem-4srv
+  #   daemon: simple
+  #   command: bin/server
 
 parts:
   snaptest:

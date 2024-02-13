@@ -36,11 +36,6 @@ func main() {
 
 	cleanup()
 
-	// write file in shared memory
-	data := []byte("Hello from Server!\n")
-	err := os.WriteFile(internal.JustFile, data, 0644)
-	log.Println("~~~WriteFile err:", err)
-
 	// server on unix socket in shared memory
 	listener, err := net.Listen(internal.Protocol, internal.SockAddrSh)
 	if err != nil {
